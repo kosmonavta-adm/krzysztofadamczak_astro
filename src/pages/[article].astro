@@ -10,7 +10,7 @@ export const getStaticPaths = (async () => {
     const publishedBlogEntries = await getCollection('articles', ({ data }) => {
         return data.draft !== true;
     });
-    const staticPaths = publishedBlogEntries.map((entry) => ({ params: { title: entry.slug }, props: { entry } }));
+    const staticPaths = publishedBlogEntries.map((entry) => ({ params: { article: entry.slug }, props: { entry } }));
 
     return staticPaths;
 }) satisfies GetStaticPaths;
