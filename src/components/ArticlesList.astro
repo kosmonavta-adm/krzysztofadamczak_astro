@@ -1,0 +1,53 @@
+---
+import { Image } from 'astro:assets';
+import { getCollection, type CollectionEntry } from 'astro:content';
+import { format } from 'date-fns/format';
+import { pl } from 'date-fns/locale/pl';
+
+interface Props {
+    publishedEntries: CollectionEntry<'articles'>[];
+}
+const { publishedEntries } = Astro.props;
+---
+
+<div class="grid grid-cols-1 gap-32">
+    {
+        publishedEntries.map((entry) => {
+            return (
+                <article class="grid grid-cols-1 bg-neutral-50 md:grid-cols-2 md:gap-8">
+                    <div class="flex flex-col gap-4 p-4 sm:gap-8 sm:p-8">
+                        <div class="flex flex-col gap-1">
+                            <h3 class="text-2xl font-bold transition-colors hover:text-neutral-800">
+                                <a
+                                    data-astro-prefetch
+                                    href={`${entry.slug}`}
+                                >
+                                    {entry.data.title}
+                                </a>
+                            </h3>
+                            <time
+                                class="text-sm"
+                                datetime={entry.data.publishDate.toISOString()}
+                            >
+                                {format(entry.data.publishDate, "d MMMM yyyy 'r.'", { locale: pl })}
+                            </time>
+                        </div>
+                        <p class="prose prose-lg my-auto">{entry.data.snippet}</p>
+                        <a
+                            data-astro-prefetch
+                            class="ml-auto w-fit font-bold"
+                            href={`/${entry.slug}`}
+                        >
+                            Czytaj dalej
+                        </a>
+                    </div>
+                    <Image
+                        class="order-first flex max-h-[256px] w-full object-cover md:order-none md:max-h-[512px]"
+                        alt={entry.data.cover.alt}
+                        src={entry.data.cover.src}
+                    />
+                </article>
+            );
+        })
+    }
+</div>

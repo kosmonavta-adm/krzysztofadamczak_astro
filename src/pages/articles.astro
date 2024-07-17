@@ -1,0 +1,40 @@
+---
+import { getCollection } from 'astro:content';
+import ArticlesList from '../components/ArticlesList.astro';
+import Footer from '../components/Footer.astro';
+import Hero from '../components/Hero.astro';
+import Newsletter from '../components/Newsletter.astro';
+import Projects from '../components/Projects.astro';
+import SiteLayout from '../layouts/SiteLayout.astro';
+
+const publishedEntries = await getCollection('articles', ({ data }) => {
+    return data.draft !== true;
+});
+
+publishedEntries.sort(function (a, b) {
+    return b.data.publishDate.valueOf() - a.data.publishDate.valueOf();
+});
+---
+
+<SiteLayout>
+    <title slot="head">Krzysztof Adamczak - wszystkie artykuły</title>
+    <meta
+        slot="head"
+        name="description"
+        content="Cześć, nazywam się Krzysztof Adamczak i zajmuję się budowaniem aplikacji internetowych. Pomogę Ci przekuć Twój pomysł w gotowy produkt."
+    />
+    <div class="flex flex-col gap-6">
+        <h2 class="text-4xl font-extrabold">Artykuły</h2>
+        <ArticlesList publishedEntries={publishedEntries} />
+    </div>
+    <svg
+        class="absolute inset-0 -z-10 fill-neutral-50/50"
+        viewBox="0 0 480 480"
+        xmlns="http://www.w3.org/2000/svg"
+        xmlns:xlink="http://www.w3.org/1999/xlink"
+    >
+        <path
+            d="M434.5,313.5Q415,387,344.5,411Q274,435,218.5,404Q163,373,93,346Q23,319,59,253Q95,187,130.5,149Q166,111,218.5,88.5Q271,66,337,85Q403,104,428.5,172Q454,240,434.5,313.5Z"
+        ></path>
+    </svg>
+</SiteLayout>

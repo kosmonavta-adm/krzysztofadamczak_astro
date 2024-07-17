@@ -1,0 +1,28 @@
+---
+import { Image } from 'astro:assets';
+import photo from '../images/photo.jpg';
+---
+
+<section class="flex flex-col items-center justify-between gap-16 sm:gap-32 xl:flex-row">
+    <div>
+        <h2 class="mb-12 text-balance text-5xl font-bold md:text-6xl">Od pomysłu do produktu.</h2>
+        <div class="prose prose-lg">
+            <p>
+                Cześć, nazywam się Krzysztof Adamczak i zajmuję się budowaniem aplikacji internetowych. Programowanie to
+                dla mnie nie tylko ścieżka zawodowa, ale pasja, która towarzyszy mi blisko 15 lat.
+            </p>
+
+            <p>
+                Porozmawiamy o zwariowanym świecie <i>web developmentu</i> i nie tylko. Zobaczymy, że nie każdy pomsył jest
+                dobry i zdecydowanie nic nie jest czarno-białe. Najważniejsze - nauczymy się wspólnie wielu rzeczy.
+            </p>
+        </div>
+    </div>
+    <Image
+        loading="eager"
+        src={photo}
+        quality="max"
+        class="order-first aspect-square xl:order-none"
+        alt="Zdjęcie przedstawiające autora"
+    />
+</section>

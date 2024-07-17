@@ -1,0 +1,41 @@
+---
+import { getCollection } from 'astro:content';
+import ArticlesList from '../components/ArticlesList.astro';
+import Hero from '../components/Hero.astro';
+import Newsletter from '../components/Newsletter.astro';
+import Projects from '../components/Projects.astro';
+import SiteLayout from '../layouts/SiteLayout.astro';
+
+const publishedEntries = await getCollection('articles', ({ data }) => {
+    return data.draft !== true;
+});
+
+publishedEntries
+    .sort(function (a, b) {
+        return b.data.publishDate.valueOf() - a.data.publishDate.valueOf();
+    })
+    .splice(3, Infinity);
+---
+
+<SiteLayout>
+    <title slot="head">Krzysztof Adamczak</title>
+    <meta
+        slot="head"
+        name="description"
+        content="Cześć, nazywam się Krzysztof Adamczak i zajmuję się budowaniem aplikacji internetowych. Pomogę Ci przekuć Twój pomysł w gotowy produkt."
+    />
+    <Hero />
+    <Projects />
+    <div class="flex flex-col gap-8">
+        <div class="flex flex-col gap-12">
+            <h2 class="text-4xl font-extrabold">Najnowsze artykuły</h2>
+            <ArticlesList publishedEntries={publishedEntries} />
+        </div>
+        <a
+            class="ml-auto mt-auto w-fit bg-neutral-950 px-4 py-2 text-neutral-50 transition-colors hover:bg-neutral-800"
+            href="/articles"
+            >Zobacz wszystkie</a
+        >
+    </div>
+    <Newsletter />
+</SiteLayout>

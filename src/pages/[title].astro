@@ -1,0 +1,46 @@
+---
+import type { GetStaticPaths } from 'astro';
+import { getCollection } from 'astro:content';
+
+import { format } from 'date-fns/format';
+import SiteLayout from '../layouts/SiteLayout.astro';
+import { pl } from 'date-fns/locale/pl';
+
+export const getStaticPaths = (async () => {
+    const publishedBlogEntries = await getCollection('articles', ({ data }) => {
+        return data.draft !== true;
+    });
+    const staticPaths = publishedBlogEntries.map((entry) => ({ params: { title: entry.slug }, props: { entry } }));
+
+    return staticPaths;
+}) satisfies GetStaticPaths;
+
+const { entry } = Astro.props;
+const { Content } = await entry.render();
+---
+
+<SiteLayout>
+    <title slot="head">Krzysztof Adamczak - {entry.data.title}</title>
+    <meta
+        slot="head"
+        name="description"
+        content={entry.data.snippet}
+    />
+
+    <article>
+        <div class="prose prose-lg mx-auto max-w-[80ch]">
+            <h1>
+                {entry.data.title}
+            </h1>
+            <div class="mt-3 flex flex-wrap items-center gap-2 md:flex-nowrap">
+                <time
+                    class="text-gray-400"
+                    datetime={entry.data.publishDate.toISOString()}
+                >
+                    {format(entry.data.publishDate, "d MMMM yyyy 'r.'", { locale: pl })}
+                </time>
+            </div>
+            <Content />
+        </div>
+    </article>
+</SiteLayout>
