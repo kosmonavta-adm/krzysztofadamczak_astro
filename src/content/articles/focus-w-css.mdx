@@ -1,0 +1,97 @@
+---
+draft: false
+title: 'Focus w CSS'
+snippet:
+    'Zastanawiałeś się kiedyś w jaki sposób poprawnie ostylować focus w CSS? Co robi :focus-within i po co mi :focus-visible? :active czy :focus? A może jeszcze :has... To prostsze niż Ci się wydaje!'
+publishDate: '2024-09-18'
+cover: { src: './focus-w-css-cover.jpg', alt: '' }
+---
+
+Rzadko kiedy słyszę, żeby ktoś lubił pisać CSS. Zazwyczaj kojarzy się on z przykrą koniecznością. Po części rozumiem, z czego to wynika. CSS posiada mnóstwo reguł i zasad, bez poznania których często będziemy chodzić po omacku. Wiesz na ile sposobów można stylować focus w CSS? Mamy *:focus*, *:focus-visible*, *:focus-within*... Do tego dochodzi np. *:active*, który często jest mylony z *:focus*. Nie wiem, czy odczaruję dla Ciebie CSS, ale przynajmniej poznasz bliżej kilka użytecznych selektorów.
+
+Na ten moment skupmy się narazie na *:focus* i *:focus-visible*. Poniżej masz dwa przyciski. Do ostylowania pierwszego wykorzystałem *:focus* a w drugim *:focus-visible*.
+
+<div class="flex gap-2 justify-center">
+	<button class="focus:border-red-400 cursor-pointer border px-3 py-1.5 focus:outline-none">focus</button>
+	<button class="focus-visible:border-red-400 cursor-pointer border px-3 py-1.5 focus:outline-none">focus-visible</button>
+</div>
+
+
+```css
+/* Przycisk po lewej */
+button:focus {
+	border: 1px solid red;
+}
+
+/* Przycisk po prawej */
+button:focus-visible {
+	border: 1px solid red;
+}
+```
+
+Kiedy naciśniesz pierwszy, obramowanie podświetli się na czerwono i zostanie tak dopóki nie zmieni się focus. A co się stanie po naciśnięciu drugiego? Absolutnie nic. Cała magia zadzieje się kiedy spróbujesz przejść przez oba przyciski za pomocą klawisza Tab. Dopiero wtedy obramowanie drugiego przycisku podświetli się na czerwono. Dzieje się tak, ponieważ style dla *:focus-visible* są aplikowane tylko i wyłącznie wtedy, kiedy przeglądarka uzna, że jest to konieczne. Zazwyczaj nie chcemy, żeby przycisk został podświetlony, kiedy już na niego klikneliśmy. **Dlatego śmiało można stwierdzić, że domyślnie powinniśmy sięgać po *:focus-visible*, a nie *:focus*.**
+
+A jak ma się do tego selektor *:active*? Zobaczmy.
+
+<button class="flex m-auto active:bg-red-100 focus:border-red-400 cursor-pointer border px-3 py-1.5 focus:outline-none">focus + active</button>
+
+
+```css
+button:focus {
+	border: 1px solid red;
+}
+
+button:active {
+	background-color: rgb(253, 230, 231);
+}
+```
+
+Widzisz różnicę? Selektor :active (jak sama nazwa wskazuje) będzie aktywny tylko wtedy, kiedy naciskamy przycisk. W zdecydowanej większości przypadków lepszą opcją będzie skorzystanie z *:active*, jeżeli zależy Ci na ostylowaniu przycisku w momencie wciskania.
+
+W tym momencie pozostaje nam skupić się na *:focus-within*. Załóżmy, że tworzysz formularz i chcesz, żeby po naciśnięciu na pole tekstowe podświetliła się etykieta. Rozwiązanie? Bardzo proste.
+
+<label class="focus-within:font-bold flex flex-col p-0 gap-1">Adres e-mail<input class="border"/></label>
+
+```html
+	<style>
+		label:focus-within {
+			font-weight: 700;
+		}
+	</style>
+
+	<label>
+		Adres e-mail
+		<input />
+	</label>
+```
+
+Oczywiście w tym wypadku moglibyśmy rozwiązać to przy pomocy innej struktury i innych selektorów, ale nie zawsze mamy taką opcję. W zanadrzu mamy jeszcze jeden selektor, który mniej więcej od 2023 roku jest wspierany przez większość przeglądarek. Mowa tutaj o *:has*. Zobaczmy w jaki sposób moglibyśmy z niego skorzystać.
+
+<label class="has-[input:focus-visible]:font-bold flex flex-col p-0 gap-1">Adres e-mail<input class="border"/></label>
+
+```html
+	<style>
+		label:has(input:focus-visible) {
+			font-weight: 700;
+		}
+	</style>
+
+	<label>
+		Adres e-mail
+		<input />
+	</label>
+```
+
+Dużo się nie zmieniło, prawda? Zwróć uwagę, że semantyka w przypadku *:has* i *:focus-within* jest dokładnie taka sama. Najważniejsza różnica to to, że *:has* to selektor-rodzic. To tak jakbyś powiedział - zmień etykietę jeżeli pole tekstowe ma aktywny focus. W każdym razie, *:has* to temat na osobny wpis. Zdecydowanie warto się z nim zapoznać i pamiętać o nim, bo pozwala zmienić podejście do CSS o 180 stopni.
+
+I pamiętaj...
+
+<div class="border-2 aspect-square w-32 h-32 text-4xl items-center flex p-2 m-auto">
+	<p>CSS IS AWESOME*</p>
+</div>
+
+<p class="text-right">Miłego kodowania!</p>
+
+
+
+<p class="text-sm text-neutral-500">*Nie no, serio tak myślę!</p>
