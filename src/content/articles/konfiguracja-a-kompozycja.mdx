@@ -1,0 +1,255 @@
+---
+draft: false
+title: 'Konfiguracja a kompozycja'
+snippet:
+    'W tym artykule dowiesz się, jak tworzyć bardziej elastyczne i łatwiejsze w utrzymaniu komponenty w React. Zobaczysz jak modularność kodu może uprosćić rozwój aplikacji i że nie zawsze jest to jedyne słuszne wyjście.'
+publishDate: '2024-10-10'
+cover: { src: './konfiguracja-a-kompozycja-cover.webp', alt: '' }
+---
+import { Image } from 'astro:assets';
+import firstCard from './konfiguracja-a-kompozycja-1.webp';
+import secondCard from './konfiguracja-a-kompozycja-2.webp';
+import thirdCard from './konfiguracja-a-kompozycja-3.webp';
+
+Zdecydowana większość Front Endu dawno temu pokochała komponenty. Wspomnienie o old schoolowym pisaniu index.html w Pajączku 5 NxG wydaje się być tak odległe, jakby nigdy się nie wydarzyło. Trudno się dziwić, komponenty wydają się być naturalną ewolucją w tworzeniu aplikacji internetowych. Nawet pisząc strony statyczne sięgamy po narzędzia typu [Astro](https://astro.build/). Łatwość pisania komponentów sprawia, że możemy szybko pogubić się dodając do nich kolejne funkcje tworząc tym samym kod który jest ciężki do modyfikacji i podatny na błędy. A warto pochylić się nad nim trochę dłużej i przemyśleć dokładnie to co mamy wdrożyć.
+
+Załóżmy, że musisz stworzyć komponent typu _Card_ na stronie. Zespół UI zaproponował następujący design. Nic trudnego, prawda? Kilka linijek tekstu i przycisk.
+
+<Image class='mx-auto' src={firstCard} alt="Pierwsza wersja komponentu Card" />
+
+```jsx
+function Card({ children }) {
+	return (
+		<div>
+			<p>{children}</p>
+			<button>Zapisz</button>
+		</div>
+	);
+}
+```
+
+Zadowolony wrzucasz kod do repozytorium i kończysz pracę. Następnego dnia dowiadujesz się, że w kilku miejscach przyda się zmodyfikowana wersja tego komponentu - **musisz dodać tytuł oraz datę**. Komponent ma wyglądać teraz w następujący sposób.
+
+<Image class='mx-auto' src={secondCard} alt="Druga wersja komponentu Card" />
+
+Jesteśmy mądrymi programistami i w myśl zasady _DRY_ nie chcemy powielać kodu dlatego dodajemy kolejne atrybuty do naszego komponentu _Card_.
+
+```jsx
+function Card({ children, title, date }) {
+	return (
+		<div>
+			{title && date && (
+				<div>
+					<h2>{title}</h2>
+					<p>{date}</p>
+				</div>
+			)}
+			<p>{children}</p>
+			<button>Zapisz</button>
+		</div>
+	);
+}
+```
+
+Nim zdążysz dokończyć ostatnią linijkę, dostajesz kolejną wiadomość na czacie: "Hej, mógłbyś dodać jeszcze obrazek pod tytułem i datą? Będzie on używany w kilku miejscach, reszta pozostaje bez zmian!"
+
+<Image class='mx-auto' src={thirdCard} alt="Trzeci wersja komponentu Card" />
+
+Myślisz sobie - pewnie, nie ma problemu.
+
+```jsx
+function Card({ children, title, date, img }) {
+	return (
+		<div>
+			{title && date && (
+				<div>
+					<h2>{title}</h2>
+					<p>{date}</p>
+				</div>
+			)}
+			{img && <img src={img} />}
+			<p>{children}</p>
+			<button>Zapisz</button>
+		</div>
+	);
+}
+```
+
+Pociągnijmy ten scenariusz jeszcze trochę dalej, w dalszym ciągu jest jak najbardziej realny. Powiedzmy, że w jednym konkretnym miejscu zamiast przycisku ma być link.
+
+```jsx
+function Card({ children, title, date, img, link }) {
+	return (
+		<div>
+			{title && date && (
+				<div>
+					<h2>{title}</h2>
+					<p>{date}</p>
+				</div>
+			)}
+			{img && <img src={img} />}
+			<p>{children}</p>
+			{link ? <a href={link}>Przejdź</a> : <button>Zapisz</button>}
+		</div>
+	);
+}
+```
+
+Jak wygląda wywołanie takiego komponentu?
+
+```jsx
+<Card
+	title='Testowy tytuł'
+	date='01.12.2024'
+	img={img}
+	link='/sale'
+>
+	Lorem ipsum
+</Card>
+```
+
+Możesz powiedzieć, że nie wygląda to źle, ale pamiętaj, że ten przykład jest uproszczony na potrzeby tekstu. Wraz z rosnącą liczbą wymagań rośnie poziom skomplikowania. Spróbujmy przerobić trochę nasz komponent tak, żeby był łatwiejszy w modyfikacji. Przede wszystkim - rozbijmy go na mniejsze części.
+
+```jsx
+	function CardTitle({children}) {
+		return (
+			<h2>{children}</h2>
+		)
+	}
+
+	function CardDate({children}) {
+		return (
+			<p>{children}</p>
+		)
+	}
+
+	function CardImage({img}) {
+		return (
+			<img src={img} />
+		)
+	}
+
+	function CardText({children}) {
+		return (
+			<p>{children}</p>
+		)
+	}
+
+	function CardLink({children, href}) {
+		return (
+			<a href={link}>{children}</h2>
+		)
+	}
+
+	function CardButton({children}) {
+		return (
+			<button>{children}</button>
+		)
+	}
+
+	function Card({children}) {
+		return (
+			<div>
+				{children}
+			</div>
+		)
+	}
+
+	function App() {
+		return (
+			<Card>
+				<div>
+					<CardTitle>Tytuł</CardTitle>
+					<CardDate>01.12.2024</CardDate>
+				</div>
+				<CardImage img={img}/>
+				<CardText>Lorem ipsum</CardText>
+				<CardLink href={link}>Przejdź</CardLink>
+			</Card>
+		)
+	}
+```
+
+Czy napisaliśmy więcej kodu? Zdecydowanie. Czy nasz komponent jest łatwiejszy w utrzymaniu i rozbudowie? Myślę, że sam widzisz różnicę. Czy takie podejście jest zawsze dobrym rozwiązaniem? Nie. Jako główny wskaźnik uznałbym to w jak dużym stopniu komponent ma być podatny na modyfiakcje. Nie widzę powodu, żeby rozbijać na mniejsze części coś, co nigdy się nie zmieni.
+
+Spróbujmy zastosować ten wzorzec na innym przykładzie - zbudujemy komponent _Dialog_. Powiedzmy, że nie chcemy korzystać z zewnętrznej biblioteki ani użyć [natywnych tagów](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/dialog). Na początku stworzymy wersję, która sama w sobie jest zamkniętym komponentem.
+
+```jsx
+import { useState } from "react";
+
+function Dialog({ open }) {
+	if (open === false) return;
+
+	return <div>Nasz dialog!</div>;
+}
+
+function App() {
+	const [isDialogOpen, setIsDialogOpen] = useState(false);
+
+	const toggleIsDialogOpen = () => setIsDialogOpen((prevIsDialogOpen) => !prevIsDialogOpen);
+
+	return (
+		<div>
+			<button onClick={toggleIsDialogOpen}>Pokaż dialog</button>
+			<Dialog open={isDialogOpen} />
+		</div>
+	);
+}
+```
+
+A teraz zróbmy to samo, tylko z wykorzystaniem kompozycji i _React Context_.
+
+```jsx
+const DialogContext = createContext({});
+
+const useDialog = () => {
+	const context = useContext(DialogContext);
+
+	if (!context) {
+		throw new Error("useDialog must be used within a DialogProvider");
+	}
+
+	return context;
+};
+
+const Dialog = ({ children }) => {
+	const [isDialogOpen, setIsDialogOpen] = useState(false);
+	const toggleIsDialogOpen = () => setIsDialogOpen((prevIsDialogOpen) => !prevIsDialogOpen);
+
+	const value = {
+		isDialogOpen,
+		toggleIsDialogOpen,
+	};
+
+	return <DialogContext.Provider value={value}>{children}</DialogContext.Provider>;
+};
+
+function DialogTrigger({ children }) {
+	const { toggleIsDialogOpen } = useDialog();
+
+	return <button onClick={toggleIsDialogOpen}>{children}</button>;
+}
+
+function DialogContent({ children }) {
+	const { isDialogOpen } = useDialog();
+
+	if (isDialogOpen === false) return;
+
+	return <div>{children}</div>;
+}
+
+function App() {
+	return (
+		<Dialog>
+			<DialogTrigger>Pokaż dialog</DialogTrigger>
+			<DialogContent>Nasz dialog!</DialogContent>
+		</Dialog>
+	);
+}
+```
+
+Podobnie jak poprzednim razem napisaliśmy więcej kodu. Zwróć jednak uwagę jak proste staje się budowanie komponentów w ten sposób. Składasz je jak klocki LEGO w strukturę której aktualnie potrzebujesz. Ukrywasz logikę tam gdzie nie jest konieczna. Dzięki temu Twój widok staje się znacznie bardziej przejrzysty i łatwiejszy do utrzymania.
+
+Tworzenie aplikacji która nie runie pod własnym ciężarem jest ciężkie. Każda decyzja którą podejmujemy ma długoterminowy wpływ na resztę projektu i zespołu. Nie chcemy [rozbijać pierwszej szyby](https://pl.wikipedia.org/wiki/Teoria_rozbitych_okien). Pewnie, nie ma idealnego oprogramowania a perfekcjonizm niekoniecznie jest zaletą. Warto jednak szukać wzorców które stworzą solidne fundamenty pod budowę kolejnych warstw naszego programu. Im więcej uda nam się położyć dobrze przemyślanych warstw, tym łatwiej będzie nam rozwijać naszą aplikację.
+
+<p class="text-right font-bold">Miłego kodowania!</p>
