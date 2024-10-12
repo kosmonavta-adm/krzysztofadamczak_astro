@@ -11,7 +11,7 @@ import firstCard from './konfiguracja-a-kompozycja-1.webp';
 import secondCard from './konfiguracja-a-kompozycja-2.webp';
 import thirdCard from './konfiguracja-a-kompozycja-3.webp';
 
-Zdecydowana większość Front Endu dawno temu pokochała komponenty. Wspomnienie o old schoolowym pisaniu index.html w Pajączku 5 NxG wydaje się być tak odległe, jakby nigdy się nie wydarzyło. Trudno się dziwić, komponenty wydają się być naturalną ewolucją w tworzeniu aplikacji internetowych. Nawet pisząc strony statyczne sięgamy po narzędzia typu [Astro](https://astro.build/). Łatwość pisania komponentów sprawia, że możemy szybko pogubić się dodając do nich kolejne funkcje tworząc tym samym kod który jest ciężki do modyfikacji i podatny na błędy. A warto pochylić się nad nim trochę dłużej i przemyśleć dokładnie to co mamy wdrożyć.
+Zdecydowana większość Front Endu dawno temu pokochała komponenty. Wspomnienie o old schoolowym pisaniu index.html w Pajączku 5 NxG wydaje się być tak odległe, jakby nigdy się nie wydarzyło. Trudno się dziwić, komponenty wydają się być naturalną ewolucją w tworzeniu aplikacji internetowych. Nawet pisząc strony statyczne sięgamy po narzędzia typu [Astro](https://astro.build/). Łatwość pisania komponentów sprawia, że możemy szybko pogubić się dodając do nich kolejne funkcje, tworząc tym samym kod, który jest ciężki do modyfikacji i podatny na błędy. A warto pochylić się nad nim trochę dłużej i przemyśleć dokładnie to co mamy wdrożyć.
 
 Załóżmy, że musisz stworzyć komponent typu _Card_ na stronie. Zespół UI zaproponował następujący design. Nic trudnego, prawda? Kilka linijek tekstu i przycisk.
 
@@ -170,7 +170,7 @@ Możesz powiedzieć, że nie wygląda to źle, ale pamiętaj, że ten przykład 
 	}
 ```
 
-Czy napisaliśmy więcej kodu? Zdecydowanie. Czy nasz komponent jest łatwiejszy w utrzymaniu i rozbudowie? Myślę, że sam widzisz różnicę. Czy takie podejście jest zawsze dobrym rozwiązaniem? Nie. Jako główny wskaźnik uznałbym to w jak dużym stopniu komponent ma być podatny na modyfiakcje. Nie widzę powodu, żeby rozbijać na mniejsze części coś, co nigdy się nie zmieni.
+Czy napisaliśmy więcej kodu? Zdecydowanie. Czy nasz komponent jest łatwiejszy w utrzymaniu i rozbudowie? Myślę, że sam widzisz różnicę. Czy takie podejście jest zawsze dobrym rozwiązaniem? Nie. Jako główny wskaźnik uznałbym to w jak dużym stopniu komponent ma być podatny na modyfikacje. Nie widzę powodu, żeby rozbijać na mniejsze części coś, co nigdy się nie zmieni.
 
 Spróbujmy zastosować ten wzorzec na innym przykładzie - zbudujemy komponent _Dialog_. Powiedzmy, że nie chcemy korzystać z zewnętrznej biblioteki ani użyć [natywnych tagów](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/dialog). Na początku stworzymy wersję, która sama w sobie jest zamkniętym komponentem.
 
@@ -202,7 +202,7 @@ A teraz zróbmy to samo, tylko z wykorzystaniem kompozycji i _React Context_.
 ```jsx
 const DialogContext = createContext({});
 
-const useDialog = () => {
+function useDialog() {
 	const context = useContext(DialogContext);
 
 	if (!context) {
@@ -212,7 +212,7 @@ const useDialog = () => {
 	return context;
 };
 
-const Dialog = ({ children }) => {
+function Dialog({ children }) {
 	const [isDialogOpen, setIsDialogOpen] = useState(false);
 	const toggleIsDialogOpen = () => setIsDialogOpen((prevIsDialogOpen) => !prevIsDialogOpen);
 
@@ -248,8 +248,8 @@ function App() {
 }
 ```
 
-Podobnie jak poprzednim razem napisaliśmy więcej kodu. Zwróć jednak uwagę jak proste staje się budowanie komponentów w ten sposób. Składasz je jak klocki LEGO w strukturę której aktualnie potrzebujesz. Ukrywasz logikę tam gdzie nie jest konieczna. Dzięki temu Twój widok staje się znacznie bardziej przejrzysty i łatwiejszy do utrzymania.
+Podobnie jak poprzednim razem napisaliśmy więcej kodu. Zwróć jednak uwagę jak proste staje się budowanie komponentów w ten sposób. Składasz je jak klocki LEGO w strukturę, której aktualnie potrzebujesz. Ukrywasz logikę tam gdzie nie jest konieczna. Dzięki temu Twój widok staje się znacznie bardziej przejrzysty i łatwiejszy do utrzymania.
 
-Tworzenie aplikacji która nie runie pod własnym ciężarem jest ciężkie. Każda decyzja którą podejmujemy ma długoterminowy wpływ na resztę projektu i zespołu. Nie chcemy [rozbijać pierwszej szyby](https://pl.wikipedia.org/wiki/Teoria_rozbitych_okien). Pewnie, nie ma idealnego oprogramowania a perfekcjonizm niekoniecznie jest zaletą. Warto jednak szukać wzorców które stworzą solidne fundamenty pod budowę kolejnych warstw naszego programu. Im więcej uda nam się położyć dobrze przemyślanych warstw, tym łatwiej będzie nam rozwijać naszą aplikację.
+Tworzenie aplikacji, która nie runie pod własnym ciężarem jest ciężkie. Każda decyzja, którą podejmujemy ma długoterminowy wpływ na resztę projektu i zespołu. Nie chcemy [rozbijać pierwszej szyby](https://pl.wikipedia.org/wiki/Teoria_rozbitych_okien). Pewnie, nie ma idealnego oprogramowania a perfekcjonizm niekoniecznie jest zaletą. Warto jednak szukać wzorców, które stworzą solidne fundamenty pod budowę kolejnych warstw naszego programu. Im więcej uda nam się położyć dobrze przemyślanych warstw, tym łatwiej będzie nam rozwijać naszą aplikację.
 
 <p class="text-right font-bold">Miłego kodowania!</p>
