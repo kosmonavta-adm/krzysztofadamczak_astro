@@ -1,0 +1,34 @@
+---
+draft: false
+title: 'O edytorach, Vimie i QMK'
+snippet:
+    'Czy Vim to rzeczywiście ostateczne narzędzie? Opowiem Ci o swoich odczuciach, spostrzeżeniach i pomysłach które pojawiły się po kilku próbach korzystania z tego edytora.'
+publishDate: '2024-11-14'
+cover: { src: './o-edytorach-vimie-i-qmk-cover.webp', alt: '' }
+---
+
+Modalne edytory, to najlepszy sposób edycji kodu, koniec kropka. Takie było moje zdanie po chwili korzystania z Neovima. Błyskawiczne poruszanie się po pliku przy użyciu samej klawiatury uzależnia. Ciężko jest odejść od tego sposobu edycji tekstu, jeżeli dało mu się szansę chociaż na chwilę. Sam jednak zrezygnowałem z Neovima pomimo kilku prób. Dlaczego?
+
+## Konfiguracja
+
+Żeby zmniejszyć trochę próg wejścia jako bazę do własnej konfiguracji wykorzystałem [kickstart.nvim](https://github.com/nvim-lua/kickstart.nvim). Wypróbowałem też jedną gotową dystrybucję - [LazyVim](https://www.lazyvim.org/), ale miałem nieodparte wrażenie, że nie działa tak płynnie, jak moja własna konfiguracja. Dałem sobie trochę czasu na przestawienie i... nie wyszło. Kiedy zreflektowałem się, że straciłem kolejną godzinę na próbie skonfigurowania relatywnie prostych rzeczy zwątpiłem. Gotowy panel ustawień dostępny w większości edytorów jest naprawdę dużym plusem. Decydując się na korzystanie z Vima musimy mieć świadomość, że spędzimy sporo czasu na dłubaniu w plikach konfiguracyjnych. Wiem, ma to jednocześnie mnóstwo zalet - poznasz zasadę działania edytora, będziesz mógł go skonfigurować w pełni pod siebie itd. Pozostaje odpowiedzieć sobie na pytanie jakie masz w danej chwili priorytety. Chcesz się skupić na kodzie, czy na edytorze?
+
+## Przyzwyczajenia
+
+Nawyki i przyzwyczajenia są potężne i trudno je przełamać. Przez cały czas korzystania z Neovima czułem się, jakbym miał mały kamyk w wygodnym bucie. Poruszanie się po plikach? Genialne! Rozwiązywanie konfliktów w Git? Wybaczcie, Visual Studio Code robi to zwyczajnie lepiej. Próbowałem korzystać z polecanego [lazygita](https://github.com/jesseduffield/lazygit) ale cały czas to nie było to. Rzeczy które mi przeszkadzały były zazwyczaj drobiazgami, ale w połączeniu z zawiłą konfiguracją sprawiały, że coraz bardziej się zniechęcałem. Pomimo tego, że chciałem, żeby było odwrotnie.
+
+## Emulatory
+
+Jeżeli nie Neovim, to może coś innego? W Visual Studio Code są co najmniej dwie wtyczki emulujące Vima. JetBrains ma IdeaVim. Może warto spróbować? Zwłaszcza, że dosłownie przed chwilą Webstorm został [udostępniony za darmo](https://blog.jetbrains.com/blog/2024/10/24/webstorm-and-rider-are-now-free-for-non-commercial-use/) do użytku prywatnego. W teorii połączenie tego co najlepsze z obu światów, prawda? W moim odczuciu niekoniecznie. Prędzej czy później coś zaczyna zgrzytać. Przykład z Webstorma - używając IdeaVim można zapomnieć o używaniu kilku kursorów naraz. Wiem, że Neovim ma makra ale znowu - przyzwyczajenia. Być może nie dałem sobie wystarczającej ilości czasu, żeby przekonać się do tego typu rozwiązań ale w moim odczuciu jest to próba zrobienia z edytora/IDE czegoś czym nie jest.
+
+## QMK
+
+Tyle czasu o tym gadałem, że dostałem od narzeczonej klawiaturę - Keychron V4. Wygląda niepozornie, jest mała i nie posiada strzałek. Za to ma coś, czego nie mają inni - wsparcie dla [QMK](https://docs.qmk.fm/). Opisanie wszystkiego na co QMK pozwala zajęłoby naprawdę sporo czasu. Powiedzmy, że masz kilka skrótów klawiszowych z których wyjątkowo często korzystasz. Każdy z nich jest dosyć skomplikowany i musisz nienaturalnie wyginać palce, żeby dosięgnąć potrzebne klawisze. A gdyby każdy skrót można było przypisać pod konkretne przyciski i wywoływać jednym wciśnięciem? Żaden problem. To dopiero początek możliwości QMK.
+
+Skoro QMK daje tyle opcji, może warto spróbować odtworzyć w nim chociaż część funkcjonalności Vima? Doszedłem do wniosku, że chcę mieć dwie warstwy - pierwsza ma służyć do wprowadznia tekstu a druga ma odpowiadać za poruszanie się, usuwanie, zaznaczanie i wszelkiego rodzaju transformacje tekstu. Z warstwy służącej do pisania przełączam się na drugą za pomocą klawisza _Caps Lock_. Z kolei jeżeli chcę wrócić do pisania wystarczy, że nacisnę klawisz _i_. Posiadanie dwóch osobnych przycisków do przełączania się między warstwami wydaje mi się logiczniejsze. Dodatkowo zmianę warstwy sygnalizuję zmianą koloru podświetlenia klawiatury. W Vimie zmienia nam się kursor, co daje nam natychmiastową informację w jakim trybie się znajdujemy. W Visual Studio Code udało mi się odtworzyć taką funkcjnonalność, ale ze względu na kilka błędów ostatecznie z niej zrezygnowałem.
+
+W QMK możemy ustawić leader key, zupełnie jak w Vimie. Osobiście ustawiłem go jako _spację_. Sporą część skrótów wyzwalam dokładnie w ten sposób. Np. _leader c(ode) a(ction)_ wyzwala okno z opcjami refaktoryzacji. Co więcej? _W_ i _b_ służą do przemieszczania się między słowami, _ctrl + d_ i _ctrl + u_ przesuwają dokładnie połowę ekranu, _/_ włącza wyszukiwarkę itd. Jeżeli jesteś ciekawy całości [tutaj](https://github.com/kosmonavta-adm/keychron-v4) znajdziesz link do repozytorium.
+
+Pomimo tego, że mam tylko część funkcjonalności Vima, kodowanie configów w Lua zamieniłem na C i poświęciłem na to równie dużo czasu, to sprawiło mi to mnóstwo frajdy. Co z tego wynika? Wydaje mi się, że po prostu trzeba przejść swoją drogę, wypróbować różne opcje, zobaczyć co Ci odpowiada i nie fiksować się na jednej rzeczy.
+
+<p class="text-right">Miłego kodowania!</p>
